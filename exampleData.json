@@ -1,0 +1,114 @@
+{
+    "items": [
+      {
+        "barcode": 645222333,
+        "title": "Velours Violet Fuşya Ekose Desenli Hizmetçi Kostüm Seti 17040",
+        "productMainId": "MODELKODU",
+        "brandId": 1860622,
+        "categoryId": 574,
+        "quantity": 113.0,
+        "stockCode": "17040.27.L/XL",
+        "dimensionalWeight": 0,
+        "description": "YNT Ekose Desenli Hizmetçi Kostüm Seti 17040 Bedenler : S/M - L/XL - 2XL/3XL Paket İçeriği  : *Etek *Bolero *Bel Bandı *Dantelli Çorap Not :İncelediginiz Ürün Hijyen Kuralları Gereği İade Ve Değişimi Bulunmamaktadır. Bu ürün Vega Sanal Mağaza ile listelenmiştir",
+        "currencyType": "TRY",
+        "listPrice": 958.5057324840765,
+        "salePrice": 958.5057324840765,
+        "vatRate": 10,
+        "cargoCompanyId": 7870233582,
+        "images": [
+          {
+            "url": "https://static.ticimax.cloud/60971/uploads/urunresimleri/bella-notte-fusya-ekose-desenli-hizmetci-dd32.jpg"
+          },
+          {
+            "url": "https://static.ticimax.cloud/60971/uploads/urunresimleri/bella-notte-fusya-ekose-desenli-hizmetci-d109.jpg"
+          },
+          {
+            "url": "https://static.ticimax.cloud/60971/uploads/urunresimleri/bella-notte-fusya-ekose-desenli-hizmetci-7aae.jpg"
+          },
+          {
+            "url": "https://static.ticimax.cloud/60971/uploads/urunresimleri/bella-notte-fusya-ekose-desenli-hizmetci-f53d.jpg"
+          },
+          {
+            "url": "https://static.ticimax.cloud/60971/uploads/urunresimleri/bella-notte-fusya-ekose-desenli-hizmetci-e232.jpg"
+          }
+        ],
+        "attributes": [
+          {
+            "attributeId": 47,
+            "customAttributeValue": "FUŞYA2"
+          },
+          {
+            "attributeId": 338,
+            "attributeValueId": "7112"
+          },
+          {
+            "attributeId": 346,
+            "attributeValueId": 4293
+          },
+          {
+            "attributeId": 343,
+            "attributeValueId": 4295
+          },
+          {
+            "attributeId": 200,
+            "attributeValueId": 22131
+          }
+        ]
+      },
+      {
+        "barcode": 645222334,
+        "title": "Velours Violet Fuşya Ekose Desenli Hizmetçi Kostüm Seti 17040",
+        "productMainId": "MODELKODU",
+        "brandId": 1860622,
+        "categoryId": 574,
+        "quantity": 35.0,
+        "stockCode": "17040.27.S/M",
+        "dimensionalWeight": 0,
+        "description": "YNT Ekose Desenli Hizmetçi Kostüm Seti 17040 Bedenler : S/M - L/XL - 2XL/3XL Paket İçeriği  : *Etek *Bolero *Bel Bandı *Dantelli Çorap Not :İncelediginiz Ürün Hijyen Kuralları Gereği İade Ve Değişimi Bulunmamaktadır. Bu ürün Vega Sanal Mağaza ile listelenmiştir",
+        "currencyType": "TRY",
+        "listPrice": 880.6878649681528,
+        "salePrice": 880.6878649681528,
+        "vatRate": 10,
+        "cargoCompanyId": 7870233582,
+        "images": [
+          {
+            "url": "https://static.ticimax.cloud/60971/uploads/urunresimleri/bella-notte-fusya-ekose-desenli-hizmetci-dd32.jpg"
+          },
+          {
+            "url": "https://static.ticimax.cloud/60971/uploads/urunresimleri/bella-notte-fusya-ekose-desenli-hizmetci-d109.jpg"
+          },
+          {
+            "url": "https://static.ticimax.cloud/60971/uploads/urunresimleri/bella-notte-fusya-ekose-desenli-hizmetci-7aae.jpg"
+          },
+          {
+            "url": "https://static.ticimax.cloud/60971/uploads/urunresimleri/bella-notte-fusya-ekose-desenli-hizmetci-f53d.jpg"
+          },
+          {
+            "url": "https://static.ticimax.cloud/60971/uploads/urunresimleri/bella-notte-fusya-ekose-desenli-hizmetci-e232.jpg"
+          }
+        ],
+        "attributes": [
+          {
+            "attributeId": 47,
+            "customAttributeValue": "FUŞYA2"
+          },
+          {
+            "attributeId": 338,
+            "attributeValueId": "7117"
+          },
+          {
+            "attributeId": 346,
+            "attributeValueId": 4293
+          },
+          {
+            "attributeId": 343,
+            "attributeValueId": 4295
+          },
+          {
+            "attributeId": 200,
+            "attributeValueId": 22131
+          }
+        ]
+      }
+    ]
+}
