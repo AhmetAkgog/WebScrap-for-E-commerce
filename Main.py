@@ -16,13 +16,34 @@ import requests
 class ScraperThread(QThread):
     log_signal = pyqtSignal(str)
 
-    def __init__(self, username, password, base_urls, supplier_id, access_token):
+    def __init__(self, username, password, base_urls, supplier_id, access_token, product_name_replacements, product_main_id, brand_id, category_id, profit_margin, start_barcode):
         super().__init__()
         self.username = username
         self.password = password
         self.base_urls = base_urls
         self.supplier_id = supplier_id
         self.access_token = access_token
+        self.product_name_replacements = self.parse_replacements(product_name_replacements)
+        self.product_main_id = product_main_id
+        self.brand_id = brand_id
+        self.category_id = category_id
+        self.profit_margin = profit_margin
+        self.start_barcode = start_barcode
+    
+    def parse_replacements(self, replacements_text):
+        replacements = {}
+        for item in replacements_text.split(","):
+            if ":" in item:
+                old, new = item.split(":")
+                replacements[old.strip()] = new.strip()
+        return replacements
+
+    def replace_product_name(self, product_name):
+        for old, new in self.product_name_replacements.items():
+            if old in product_name:
+                return product_name.replace(old, new)
+        # If no replacements matched, return the original product name
+        return product_name
 
     def run(self):
         # Execute scraping process
@@ -31,7 +52,7 @@ class ScraperThread(QThread):
     def setup_driver(self):
         chrome_options = Options()
         chrome_options.add_argument("--headless")
-        service = Service('WEBDRIVER PATH')
+        service = Service('YOUR WEBDRIVER PATH')
         driver = webdriver.Chrome(service=service, options=chrome_options)
         return driver
 
@@ -42,7 +63,7 @@ class ScraperThread(QThread):
         driver.find_element(By.NAME, "txtUyeGirisPassword").send_keys(password)
         driver.find_element(By.CLASS_NAME, "uyeGirisFormDetailButtonList").click()
         time.sleep(5)
-        return "SOME STRING VALUE APPEARS WHEN ONLY LOGGED IN" in driver.page_source
+        return "Ahmet Akgöğ" in driver.page_source
 
     def get_cookies(self, driver):
         cookies = driver.get_cookies()
@@ -81,7 +102,7 @@ class ScraperThread(QThread):
             time.sleep(delay)
         return all_html
 
-    def extract_product_data(self, html, start_barcode, previous_product_name=None, color_suffix=1):
+    def extract_product_data(self, html, start_barcode, previous_product_name=None, color_suffix=1, custom_replacements=None):
         soup = BeautifulSoup(html, 'html.parser')
 
         # Use regex to find the JavaScript variable containing productDetailModel
@@ -92,12 +113,10 @@ class ScraperThread(QThread):
 
         # Parse the JSON data
         product_detail_model = json.loads(match.group(1))
-
         # Extract the productName
-        product_name = product_detail_model.get('productName', '')
-
-        if 'YNT' in product_name:
-            product_name = product_name.replace('YNT', 'Velours Violet')
+        original_product_name = product_detail_model.get('productName', '')
+        
+        product_name = self.replace_product_name(original_product_name)
 
         if product_name != previous_product_name:
             color_suffix += 1
@@ -124,10 +143,6 @@ class ScraperThread(QThread):
 
         products = product_detail_model.get('products', [])
         extracted_data = []
-        productMainId = "MODELKODU"
-        brandID = 1860622
-        categoryId = 574
-        profitMargin = 0.3
         shippingFee = 61.9
         commissionRate = 0.215
 
@@ -155,7 +170,7 @@ class ScraperThread(QThread):
             # Add more mappings as needed
         }
 
-        attribute_ids = category_attribute_mapping.get(categoryId, [])
+        attribute_ids = category_attribute_mapping.get(self.category_id, [])
 
         for product in products:
             tedarikci_kodu_values = product.get('tedarikciKodu', '').split('|')
@@ -212,16 +227,16 @@ class ScraperThread(QThread):
             data = {
                 'barcode': start_barcode,
                 'title': product_name,
-                'productMainId': productMainId,
-                'brandId': brandID,
-                'categoryId': categoryId,
+                'productMainId': self.product_main_id,
+                'brandId': self.brand_id,
+                'categoryId': self.category_id,
                 'quantity': product.get('stokAdedi'),
                 'stockCode': product.get('stokKodu'),
                 'dimensionalWeight': 0,
                 'description': product_description,
                 'currencyType': 'TRY',
-                'listPrice': (product.get('urunFiyatiOrjinal')+ product.get('urunFiyatiOrjinalKDV') + shippingFee)*(1+profitMargin)/(1-commissionRate),
-                'salePrice': (product.get('urunFiyatiOrjinal')+ product.get('urunFiyatiOrjinalKDV') + shippingFee)*(1+profitMargin)/(1-commissionRate),
+                'listPrice': (product.get('urunFiyatiOrjinal')+ product.get('urunFiyatiOrjinalKDV') + shippingFee)*(1+self.profit_margin)/(1-commissionRate),
+                'salePrice': (product.get('urunFiyatiOrjinal')+ product.get('urunFiyatiOrjinalKDV') + shippingFee)*(1+self.profit_margin)/(1-commissionRate),
                 'vatRate': 10,
                 'cargoCompanyId': 7870233582,
                 'images': image_urls,
@@ -319,11 +334,10 @@ class ScraperGUI(QMainWindow):
 
     def init_ui(self):
         self.setWindowTitle("Web Scraper GUI")
-        self.setGeometry(100, 100, 600, 400)
+        self.setGeometry(100, 100, 600, 500)
 
         main_layout = QVBoxLayout()
 
-        # Display the username (optional)
         login_info_layout = QHBoxLayout()
         login_info_layout.addWidget(QLabel(f"Logged in as: {self.username}"))
         main_layout.addLayout(login_info_layout)
@@ -345,6 +359,44 @@ class ScraperGUI(QMainWindow):
         urls_layout.addWidget(self.urls_input)
         main_layout.addLayout(urls_layout)
 
+        # New layout for Product Main ID, Brand ID, and Category ID
+        ids_layout = QHBoxLayout()
+
+        ids_layout.addWidget(QLabel("Product Main ID:"))
+        self.product_main_id_input = QLineEdit()
+        ids_layout.addWidget(self.product_main_id_input)
+
+        ids_layout.addWidget(QLabel("Brand ID:"))
+        self.brand_id_input = QLineEdit()
+        ids_layout.addWidget(self.brand_id_input)
+
+        ids_layout.addWidget(QLabel("Category ID:"))
+        self.category_id_input = QLineEdit()
+        ids_layout.addWidget(self.category_id_input)
+
+        main_layout.addLayout(ids_layout)
+
+        # New layout for Profit Margin and Start Barcode
+        additional_layout = QHBoxLayout()
+
+        additional_layout.addWidget(QLabel("Profit Margin (0.3 means %30):"))
+        self.profit_margin_input = QLineEdit()
+        additional_layout.addWidget(self.profit_margin_input)
+
+        additional_layout.addWidget(QLabel("Start Barcode:"))
+        self.start_barcode_input = QLineEdit()
+        additional_layout.addWidget(self.start_barcode_input)
+
+        main_layout.addLayout(additional_layout)
+
+        # Product Name Replacements Input
+        additional_inputs_layout = QVBoxLayout()
+        additional_inputs_layout.addWidget(QLabel("Product Name Replace: Eski:Yeni , YNT:Velours Violet"))
+        self.product_name_replace_input = QLineEdit()
+        additional_inputs_layout.addWidget(self.product_name_replace_input)
+
+        main_layout.addLayout(additional_inputs_layout)
+
         self.start_button = QPushButton("Start Scraping")
         self.start_button.clicked.connect(self.start_scraping)
         main_layout.addWidget(self.start_button)
@@ -365,11 +417,18 @@ class ScraperGUI(QMainWindow):
         access_token = self.access_token.text()
         base_urls = self.urls_input.text().split(',')
 
+        product_name_replacements = self.product_name_replace_input.text()
+        product_main_id = self.product_main_id_input.text()
+        brand_id = int(self.brand_id_input.text())
+        category_id = int(self.category_id_input.text())
+        profit_margin = float(self.profit_margin_input.text())
+        start_barcode = int(self.start_barcode_input.text())
+
         if not base_urls or not supplier_id or not access_token:
             QMessageBox.warning(self, "Input Error", "Please provide all required inputs.")
             return
 
-        self.thread = ScraperThread(self.username, self.password, base_urls, supplier_id, access_token)
+        self.thread = ScraperThread(self.username, self.password, base_urls, supplier_id, access_token, product_name_replacements, product_main_id, brand_id, category_id, profit_margin, start_barcode)
         self.thread.log_signal.connect(self.log)
         self.thread.start()
 
