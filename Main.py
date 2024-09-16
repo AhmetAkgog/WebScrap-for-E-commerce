@@ -2,7 +2,7 @@ import sys
 import re
 import json
 import time
-from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton, QTextEdit, QMessageBox
+from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton, QTextEdit, QMessageBox, QTabWidget
 from PyQt5.QtCore import Qt, QThread, pyqtSignal
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
@@ -12,6 +12,7 @@ from selenium.webdriver.common.keys import Keys
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 import requests
+from OtoSiparis import SiparisBilgisi
 
 class ScraperThread(QThread):
     log_signal = pyqtSignal(str)
@@ -144,6 +145,7 @@ class ScraperThread(QThread):
         products = product_detail_model.get('products', [])
         extracted_data = []
         shippingFee = 61.9
+        hizmetbedeli = 8.39
         commissionRate = 0.215
 
         size_mapping = {
@@ -225,7 +227,7 @@ class ScraperThread(QThread):
 
 
             data = {
-                'barcode': start_barcode,
+                'barcode': self.start_barcode,
                 'title': product_name,
                 'productMainId': self.product_main_id,
                 'brandId': self.brand_id,
@@ -235,8 +237,8 @@ class ScraperThread(QThread):
                 'dimensionalWeight': 0,
                 'description': product_description,
                 'currencyType': 'TRY',
-                'listPrice': (product.get('urunFiyatiOrjinal')+ product.get('urunFiyatiOrjinalKDV') + shippingFee)*(1+self.profit_margin)/(1-commissionRate),
-                'salePrice': (product.get('urunFiyatiOrjinal')+ product.get('urunFiyatiOrjinalKDV') + shippingFee)*(1+self.profit_margin)/(1-commissionRate),
+                'listPrice': (product.get('urunFiyatiOrjinal')+ product.get('urunFiyatiOrjinalKDV') + shippingFee + hizmetbedeli)*(1+self.profit_margin)/(1-commissionRate),
+                'salePrice': (product.get('urunFiyatiOrjinal')+ product.get('urunFiyatiOrjinalKDV') + shippingFee + hizmetbedeli)*(1+self.profit_margin)/(1-commissionRate),
                 'vatRate': 10,
                 'cargoCompanyId': 7870233582,
                 'images': image_urls,
@@ -334,83 +336,103 @@ class ScraperGUI(QMainWindow):
 
     def init_ui(self):
         self.setWindowTitle("Web Scraper GUI")
-        self.setGeometry(100, 100, 600, 500)
+        self.setGeometry(100, 100, 800, 600)
 
+        # Create the main tab widget
+        self.tabs = QTabWidget()
+
+        # Create individual tabs
+        self.create_scraper_tab()
+        self.create_oto_siparis_tab()
+
+        # Set the main layout
+        self.setCentralWidget(self.tabs)
+
+    def create_scraper_tab(self):
+        scraper_tab = QWidget()
         main_layout = QVBoxLayout()
+        main_layout.setContentsMargins(10, 10, 10, 10)
+        main_layout.setSpacing(10)
 
         login_info_layout = QHBoxLayout()
         login_info_layout.addWidget(QLabel(f"Logged in as: {self.username}"))
+        login_info_layout.addStretch()  # Push the label to the left
         main_layout.addLayout(login_info_layout)
 
         supplier_layout = QHBoxLayout()
         supplier_layout.addWidget(QLabel("Supplier ID:"))
         self.supplier_id = QLineEdit()
+        self.supplier_id.setFixedWidth(200)  # Set a fixed width for consistency
         supplier_layout.addWidget(self.supplier_id)
-
         supplier_layout.addWidget(QLabel("Token:"))
         self.access_token = QLineEdit()
+        self.access_token.setFixedWidth(200)  # Set a fixed width for consistency
         supplier_layout.addWidget(self.access_token)
-
         main_layout.addLayout(supplier_layout)
 
         urls_layout = QHBoxLayout()
         urls_layout.addWidget(QLabel("Base URLs (comma-separated):"))
         self.urls_input = QLineEdit()
+        self.urls_input.setFixedHeight(30)  # Adjust height for consistency
         urls_layout.addWidget(self.urls_input)
         main_layout.addLayout(urls_layout)
 
-        # New layout for Product Main ID, Brand ID, and Category ID
         ids_layout = QHBoxLayout()
-
         ids_layout.addWidget(QLabel("Product Main ID:"))
         self.product_main_id_input = QLineEdit()
+        self.product_main_id_input.setFixedWidth(150)
         ids_layout.addWidget(self.product_main_id_input)
 
         ids_layout.addWidget(QLabel("Brand ID:"))
         self.brand_id_input = QLineEdit()
+        self.brand_id_input.setFixedWidth(150)
         ids_layout.addWidget(self.brand_id_input)
 
         ids_layout.addWidget(QLabel("Category ID:"))
         self.category_id_input = QLineEdit()
+        self.category_id_input.setFixedWidth(150)
         ids_layout.addWidget(self.category_id_input)
 
         main_layout.addLayout(ids_layout)
 
-        # New layout for Profit Margin and Start Barcode
         additional_layout = QHBoxLayout()
-
         additional_layout.addWidget(QLabel("Profit Margin (0.3 means %30):"))
         self.profit_margin_input = QLineEdit()
+        self.profit_margin_input.setFixedWidth(150)
         additional_layout.addWidget(self.profit_margin_input)
 
         additional_layout.addWidget(QLabel("Start Barcode:"))
         self.start_barcode_input = QLineEdit()
+        self.start_barcode_input.setFixedWidth(150)
         additional_layout.addWidget(self.start_barcode_input)
 
         main_layout.addLayout(additional_layout)
 
-        # Product Name Replacements Input
-        additional_inputs_layout = QVBoxLayout()
-        additional_inputs_layout.addWidget(QLabel("Product Name Replace: Eski:Yeni , YNT:Velours Violet"))
+        product_name_layout = QVBoxLayout()
+        product_name_layout.addWidget(QLabel("Product Name Replace: Eski:Yeni , YNT:Velours Violet"))
         self.product_name_replace_input = QLineEdit()
-        additional_inputs_layout.addWidget(self.product_name_replace_input)
+        self.product_name_replace_input.setFixedHeight(30)
+        product_name_layout.addWidget(self.product_name_replace_input)
 
-        main_layout.addLayout(additional_inputs_layout)
+        main_layout.addLayout(product_name_layout)
 
         self.start_button = QPushButton("Start Scraping")
+        self.start_button.setFixedHeight(40)  # Adjust height for consistency
         self.start_button.clicked.connect(self.start_scraping)
         main_layout.addWidget(self.start_button)
 
-        self.log_output = QTextEdit()
-        self.log_output.setReadOnly(True)
-        main_layout.addWidget(self.log_output)
+        # Add QTextEdit for logs
+        self.log_text_edit = QTextEdit()
+        self.log_text_edit.setReadOnly(True)
+        main_layout.addWidget(self.log_text_edit)
 
-        container = QWidget()
-        container.setLayout(main_layout)
-        self.setCentralWidget(container)
+        scraper_tab.setLayout(main_layout)
+        self.tabs.addTab(scraper_tab, "Scraper")
 
-    def log(self, message):
-        self.log_output.append(message)
+    def create_oto_siparis_tab(self):
+        # Create the OtoSiparis tab by embedding the OtoSiparis widget
+        oto_siparis_tab = SiparisBilgisi(self.username, self.password)
+        self.tabs.addTab(oto_siparis_tab, "Oto Siparis")
 
     def start_scraping(self):
         supplier_id = self.supplier_id.text()
@@ -431,6 +453,10 @@ class ScraperGUI(QMainWindow):
         self.thread = ScraperThread(self.username, self.password, base_urls, supplier_id, access_token, product_name_replacements, product_main_id, brand_id, category_id, profit_margin, start_barcode)
         self.thread.log_signal.connect(self.log)
         self.thread.start()
+
+    def log(self, message):
+        self.log_text_edit.append(message)
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
