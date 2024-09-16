@@ -3,6 +3,7 @@ import mysql.connector
 from PyQt5.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QLabel, QLineEdit, QPushButton, QWidget, QMessageBox
 from Main import ScraperGUI  # Import the main GUI
 
+
 class LoginPage(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -49,8 +50,8 @@ class LoginPage(QMainWindow):
         db_config = {
             'host': 'localhost',
             'user': 'root',
-            'password': 'FthisFthat1',
-            'database': 'bellanotte'
+            'password': 'password',
+            'database': 'dbname'
         }
 
         try:
@@ -71,7 +72,7 @@ class LoginPage(QMainWindow):
             return False
 
     def open_main_gui(self, username, password):
-        self.scraper_gui = ScraperGUI(username, password)  # Pass the credentials to the scraper GUI
+        self.scraper_gui = ScraperGUI(username, password)
         self.scraper_gui.show()
         self.close()  # Close the login window
 
