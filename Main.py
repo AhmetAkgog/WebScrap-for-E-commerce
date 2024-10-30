@@ -53,7 +53,7 @@ class ScraperThread(QThread):
     def setup_driver(self):
         chrome_options = Options()
         chrome_options.add_argument("--headless")
-        service = Service('YOUR WEBDRIVER PATH')
+        service = Service('C:/Users/ahmet/Desktop/Yazılım/chromedriver-win64/chromedriver.exe')
         driver = webdriver.Chrome(service=service, options=chrome_options)
         return driver
 
@@ -79,7 +79,7 @@ class ScraperThread(QThread):
         product_links = [a for a in soup.find_all('a') if 'detailUrl' in a.get('class', []) and len(a.get('class', [])) == 1]
         return [urljoin(url, link.get('href')) for link in product_links]
 
-    def get_page_html(self, url, cookies=None, timeout=40):
+    def get_page_html(self, url, cookies=None, timeout=40): # This function handles cookies and timeouts
         try:
             session = requests.Session()
             if cookies:
@@ -166,9 +166,23 @@ class ScraperThread(QThread):
             'STANDART' : '144271'
         }
 
-        category_attribute_mapping = {
-            574: [47,338,346,343,200],  #String
-            1182: [48],  #Elbise
+        category_attribute_mapping = { 
+            #47 Renk, 338 Beden, 346 Yaş Grubu, 343 Cinsiyet, 200 Kumaş Tipi, 881 Ortam, 14 Materyal, 33 Desen, 124 Ek Özellik
+            #48 Boy, 179 Kalıp, 12 Kol Tipi, 191 Kol Boyu, 710 Koleksiyon, 870 Persona, 880 Siluet, 117 Dokuma Tipi, 342 Ürün Tipi
+            #279 Yaş
+            574: [47,338,346,343,200,881,33,124,48,710,14,710,881,48],  #String
+            1182: [47,338,346,343,200,881,179,33,124,48,12,14,191,870,880,117,710,279],  #Elbise
+            553: [47,338,346,343,200,881,33,124,48,12,191,870,880,117,710,279], #Gecelik
+            2144: [47,338,346,343,200,881,33,124,191,117,710,279], #İÇT
+            552: [47,338,12,14,33,124,179,279,48,191,870,880,117,342,710], #Babydoll
+            603: [47,338,346,343,200,179,191,342,710,870,880,117,279,124,881,12], #Atlet
+            1016: [47,338,343,200,346,14,33,179,342,710,870,881,117,124,279], #Külot
+            2160: [47,338,48,33,200,346,343,179,12,14,191,342,710,870,880,881,117,279,124,342], #Alt-Üst Takım
+            546: [47,338,48,179,200,347,343,12,14,33,124,191,342,710,870,881,117,880,279], #Tulum
+            526: [47,338,48,200,346,343,14,33,179,342,710,870,880,881,117,124,279], #Etek
+            531: [1,47,338,14,33,179,200,346,343,342,710,870,881,48,117,124,279], #Tayt
+            592: [47,338,12,14,33,48,179,191,200,346,343,342,710,870,880,881,117,124,279], #Body
+            593: [47,338,12,14,33,48,124,179,200,346,343,342,710,870,880,881,117,279], #Büstiyer
             # Add more mappings as needed
         }
 
@@ -216,7 +230,32 @@ class ScraperThread(QThread):
             if 200 in attribute_ids:
                 attributes.append({
                     "attributeId": 200,
-                    "attributeValueId": 22131
+                    "attributeValueId": 2190
+                })
+
+            if 881 in attribute_ids:
+                attributes.append({
+                    "attributeId": 881,
+                    "attributeValueId": 998415
+                })
+
+            if 14 in attribute_ids:
+                attributes.append({
+                    "attributeId": 14,
+                    "attributeValueId": 748
+                })
+
+            if 33 in attribute_ids:
+                attributes.append({
+                    "attributeId": 33,
+                    "attributeValueId": 261977
+
+                })
+
+            if 124 in attribute_ids:
+                attributes.append({
+                    "attributeId": 124,
+                    "attributeValueId": 1178759
                 })
 
             if 48 in attribute_ids:
@@ -225,6 +264,65 @@ class ScraperThread(QThread):
                     "attributeValueId": 1200547
                 })
 
+            if 179 in attribute_ids:
+                attributes.append({
+                    "attributeId": 179,
+                    "attributeValueId": 2043
+                })
+
+            if 12 in attribute_ids:
+                attributes.append({
+                    "attributeId": 12,
+                    "attributeValueId": 65
+                })
+
+            if 191 in attribute_ids:
+                attributes.append({
+                    "attributeId": 191,
+                    "attributeValueId": 2147
+                })
+
+            if 870 in attribute_ids:
+                attributes.append({
+                    "attributeId": 870,
+                    "attributeValueId": 1214218
+                })
+
+            if 880 in attribute_ids:
+                attributes.append({
+                    "attributeId": 880,
+                    "attributeValueId": 998336
+                })
+
+            if 117 in attribute_ids:
+                attributes.append({
+                    "attributeId": 117,
+                    "attributeValueId": 1178051
+                })
+
+            if 342 in attribute_ids:
+                attributes.append({
+                    "attributeId": 342,
+                    "attributeValueId": 175939
+                })
+
+            if 710 in attribute_ids:
+                attributes.append({
+                    "attributeId": 710,
+                    "attributeValueId": 259544
+                })
+
+            if 279 in attribute_ids:
+                attributes.append({
+                    "attributeId": 279,
+                    "attributeValueId": 270492
+                })
+
+            if 1 in attribute_ids:
+                attributes.append({
+                    "attributeId": 1,
+                    "attributeValueId": 10591474
+                })
 
             data = {
                 'barcode': self.start_barcode,
@@ -246,7 +344,7 @@ class ScraperThread(QThread):
             }
             extracted_data.append(data)
 
-            start_barcode += 1
+            self.start_barcode += 1
         return extracted_data, start_barcode, previous_product_name, color_suffix
 
     def send_product_data_to_trendyol(self, batched_data):
@@ -311,7 +409,7 @@ class ScraperThread(QThread):
         driver.quit()
 
         # Batch sending the data to Trendyol
-        batch_size = 1  # Number of products per batch, adjust as needed
+        batch_size = 25  # Number of products per batch, adjust as needed
 
         for i in range(0, len(all_product_data), batch_size):
             batch = all_product_data[i:i + batch_size]
@@ -428,6 +526,7 @@ class ScraperGUI(QMainWindow):
 
         scraper_tab.setLayout(main_layout)
         self.tabs.addTab(scraper_tab, "Scraper")
+
 
     def create_oto_siparis_tab(self):
         # Create the OtoSiparis tab by embedding the OtoSiparis widget
