@@ -16,7 +16,7 @@ import string
 chrome_options = Options()
 chrome_options.add_argument("--start-maximized")
 chrome_options.add_extension('C:/Users/ahmet/Desktop/Yazılım/VSCode_Projects/Datascrap for Trendyol API/CJPALHDLNBPAFIAMEJDNHCPHJBKEIAGM_1_59_0_0.crx') #ublock origin extension
-profile_path = r"C:\Users\ahmet\AppData\Local\Google\Chrome\User Data\Profile 1"
+profile_path = r"YOUR CHROME PROFILE PATH TO HERE"
 chrome_options.add_argument(f"user-data-dir={profile_path}")
 chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
 chrome_options.add_experimental_option("useAutomationExtension", False)
