@@ -47,13 +47,13 @@ driver.switch_to.window(driver.window_handles[1])
 driver.get('https://www.yeninesiltoptanci.com/UyeGiris')
 
 # Login to the second site
-username = "YOUR_USERNAME"
-password = "YOUR_PASSWORD"
-merchant_sku = ["15003","15019","15706"]
-Category = "Elbise"
-ModelKodu = "test1"
+username = "visnelibusiness@gmail.com"
+password = "Visnelikebapmiami"
+merchant_sku = ["15003"]
+Category = "String"
+ModelKodu = "Bil"
 Brand = "VSNL"
-Kar_marjı = 0.5
+Kar_marjı = 0.4
 
 try:
     driver.find_element(By.NAME, "txtUyeGirisEmail").send_keys(username)
@@ -99,6 +99,9 @@ for i in merchant_sku:
 
         original_product_name = product_detail_model.get('productName', '')
         print(f"Original Product Name: {original_product_name}")
+        old = "YNT"
+        new = "Velours Violet"
+        actual_product_name = original_product_name.replace(old,new)
 
         tedarikci_values = [(item['tedarikciKodu'].split('|'),item.get("stokKodu"),item.get("stokAdedi"),item.get("urunFiyatiOrjinal"),item.get("urunFiyatiOrjinalKDV")) for item in products]
         print(tedarikci_values)
@@ -106,8 +109,8 @@ for i in merchant_sku:
         if color == "MAVİ" or color == "SİYAH":
             color_mapping = { #Türkçe İngilizcedeki büyük İ farkından dolayı else teki block doğru çalışmıyor ve küçük i olsa bile olmuyor
             "MAVİ": "Mavi",
-            "SİYAH": "Siyah"
-        }
+            "SİYAH": "Siyah",
+            "YEŞİL": "Yeşil",}
             color = color_mapping.get(color, color.lower())
         else:
             color = color[0].upper() + color[1:].casefold()
@@ -119,6 +122,9 @@ for i in merchant_sku:
             color = "Mor"
         elif color == "Fuşya" or color == "Pudra":
             color = "Pembe"
+        elif color == "Kirik beyaz":
+            color = "Beyaz"
+
 
         fiyat = tedarikci_values[0][3]+tedarikci_values[0][4]
         satis_fiyati = (fiyat + shippingFee + hizmetbedeli)*(1+Kar_marjı)/(1-commissionRate)
@@ -144,7 +150,7 @@ for i in merchant_sku:
     # Switch back to the first tab and interact with Trendyol product page
     driver.switch_to.window(driver.window_handles[0])
     driver.get("https://partner.trendyol.com/products/single-product")
-    driver.execute_script("document.body.style.zoom='80%'")
+    driver.execute_script("document.body.style.zoom='50%'")
     try:
         trendyol_product_name = WebDriverWait(driver, 10).until(
             EC.presence_of_element_located((By.XPATH, '//input[@placeholder="Ürün adı giriniz"]')) #Trendyola ürün ismini giriyor
@@ -216,6 +222,7 @@ for i in merchant_sku:
             EC.element_to_be_clickable((By.XPATH, '//span[normalize-space(text())="Dantel"]'))
             )
             dantel_secenek.click()
+
         elif Category == "Elbise":
             boy = WebDriverWait(driver, 10).until(
             EC.element_to_be_clickable((By.XPATH, '//*[@data-vv-as="Boy"]'))
@@ -263,7 +270,255 @@ for i in merchant_sku:
             )
             yetiskin_secenek.click()
 
+            kol_tipi_element = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH, '//*[@data-vv-as="Kol Tipi"]'))
+            )
+            kol_tipi_element.click()
+
+            kolsuz_secenek = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH, '//span[normalize-space(text())="Kolsuz"]'))
+            )
+            kolsuz_secenek.click()
+
+            materyal_element = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH, '//*[@data-vv-as="Materyal"]'))
+            )
+            materyal_element.click()
+
+            tül_secenek = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div[2]/div/div[1]/div[2]/div[4]/div/div[2]/div[1]/div[5]/div[2]/div[2]/div/div/div/div/div/div/div[2]/div[5]/span'))
+            )
+            tül_secenek.click()
+
+            desen_element = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH, '//*[@data-vv-as="Desen"]'))
+            )
+            desen_element.click()
+
+            düz_secenek = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH, '//span[normalize-space(text())="Düz"]'))
+            )
+            düz_secenek.click()
         
+            yaka_tipi_element = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH, '//*[@data-vv-as="Yaka Tipi"]'))
+            )
+            yaka_tipi_element.click()
+
+            yaka_secenek = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH, '//span[normalize-space(text())="U Yaka"]'))
+            )
+            yaka_secenek.click()
+
+            kol_boyu_element = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH, '//*[@data-vv-as="Kol Boyu"]'))
+            )
+            kol_boyu_element.click()
+
+            kol_boyu_secenek = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div[2]/div/div[1]/div[2]/div[4]/div/div[2]/div[1]/div[5]/div[2]/div[5]/div/div/div/div/div/div/div[2]/div[4]/span'))
+            )
+            kol_boyu_secenek.click()
+
+            ortam_element = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH, '//*[@data-vv-as="Ortam"]'))
+            )
+            ortam_element.click()
+
+            ortam_secenek = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH, '//span[normalize-space(text())="Gece"]'))
+            )
+            ortam_secenek.click()
+
+
+            paket_içeriği_element = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH, '//*[@data-vv-as="Paket İçeriği"]'))
+            )
+            paket_içeriği_element.click()
+
+            paket_içeriği_search = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, '/html/body/div[1]/div[2]/div/div[1]/div[2]/div[4]/div/div[2]/div[1]/div[6]/div/div/div/div/div/div/div[2]/div[1]/div/div/div/div/input')) #Sends brand keys to box
+            )
+            time.sleep(2)
+            paket_içeriği_search.send_keys("Tekli")
+            time.sleep(2)
+            # Try locating the "Belirtilmemiş" option
+            tekli = WebDriverWait(driver, 5).until(
+                EC.presence_of_element_located((By.XPATH, '/html/body/div[1]/div[2]/div/div[1]/div[2]/div[4]/div/div[2]/div[1]/div[6]/div/div/div/div/div/div/div[2]/div[2]/span'))
+            )
+            tekli.click()
+
+            cep_element = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH, '//*[@data-vv-as="Cep"]'))
+            )
+            cep_element.click()
+
+            cepsiz_secenek = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH, '//span[normalize-space(text())="Cepsiz"]'))
+            )
+            cepsiz_secenek.click()
+
+            kalınlık_element = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH, '//*[@data-vv-as="Kalınlık"]'))
+            )
+            kalınlık_element.click()
+
+            kalınlık_secenek = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH, '//span[normalize-space(text())="İnce"]'))
+            )
+            kalınlık_secenek.click()
+
+            astar_durumu_element = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH, '//*[@data-vv-as="Astar Durumu"]'))
+            )
+            astar_durumu_element.click()
+
+            astarlı_secenek = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH, '//span[normalize-space(text())="Astarlı"]'))
+            )
+            astarlı_secenek.click()
+
+            ürün_detayı_element = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH, '//*[@data-vv-as="Ürün Detayı"]'))
+            )
+            ürün_detayı_element.click()
+
+            ürün_detayı_search = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, '/html/body/div[1]/div[2]/div/div[1]/div[2]/div[4]/div/div[2]/div[1]/div[11]/div/div/div/div/div/div/div[2]/div[1]/div/div/div/div/input')) #Sends brand keys to box
+            )
+            time.sleep(2)
+            ürün_detayı_search.send_keys("Dantel")
+            time.sleep(2)
+            # Try locating the "Belirtilmemiş" option
+            ürün_detayı_dantel = WebDriverWait(driver, 5).until(
+                EC.presence_of_element_located((By.XPATH, '/html/body/div[1]/div[2]/div/div[1]/div[2]/div[4]/div/div[2]/div[1]/div[11]/div/div/div/div/div/div/div[2]/div[3]/span'))
+            )
+            ürün_detayı_dantel.click()
+
+            koleksiyon_element = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH, '//*[@data-vv-as="Koleksiyon"]'))
+            )
+            koleksiyon_element.click()
+
+            koleksiyon_secenek = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH, '//span[normalize-space(text())="Glam"]'))
+            )
+            koleksiyon_secenek.click()
+
+            persona_element = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH, '//*[@data-vv-as="Persona"]'))
+            )
+            persona_element.click()
+
+            persona_secenek = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH, '//span[normalize-space(text())="Sexy"]'))
+            )
+            persona_secenek.click()
+
+            siluet_element = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH, '//*[@data-vv-as="Siluet"]'))
+            )
+            siluet_element.click()
+
+            siluet_secenek = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH, '//span[normalize-space(text())="Slim"]'))
+            )
+            siluet_secenek.click()
+
+            sürdürülebilirlik_detayı_element = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH, '//*[@data-vv-as="Sürdürülebilirlik Detayı"]'))
+            )
+            sürdürülebilirlik_detayı_element.click()
+
+            sürdürülebilirlik_secenek = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH, '//span[normalize-space(text())="Evet"]'))
+            )
+            sürdürülebilirlik_secenek.click()
+
+            ek_özellik_element = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH, '//*[@data-vv-as="Ek Özellik"]'))
+            )
+            ek_özellik_element.click()
+
+            ek_özellik_search = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, '/html/body/div[1]/div[2]/div/div[1]/div[2]/div[4]/div/div[2]/div[1]/div[18]/div/div/div/div/div/div/div[2]/div[1]/div/div/div/div/input')) #Sends brand keys to box
+            )
+            time.sleep(2)
+            ek_özellik_search.send_keys("Ek Özellik Mevcut Değil")
+            time.sleep(2)
+            # Try locating the "Belirtilmemiş" option
+            ek_özellik_seçenek = WebDriverWait(driver, 5).until(
+                EC.presence_of_element_located((By.XPATH, '/html/body/div[1]/div[2]/div/div[1]/div[2]/div[4]/div/div[2]/div[1]/div[18]/div/div/div/div/div/div/div[2]/div[2]/span'))
+            )
+            ek_özellik_seçenek.click()
+
+            kemer_element = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH, '//*[@data-vv-as="Kemer/Kuşak Durumu"]'))
+            )
+            kemer_element.click()
+
+            kemer_secenek = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH, '//span[normalize-space(text())="Kemersiz"]'))
+            )
+            kemer_secenek.click()
+
+            yaş_element = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH, '//*[@data-vv-as="Yaş"]'))
+            )
+            yaş_element.click()
+
+            yaş_secenek = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH, '//span[normalize-space(text())="Tüm Yaş Grupları"]'))
+            )
+            yaş_secenek.click()
+
+            cinsiyet_element = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH, '//*[@data-vv-as="Cinsiyet"]'))
+            )
+            cinsiyet_element.click()
+
+            cinsiyet_secenek = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH, '//span[normalize-space(text())="Kadın / Kız"]'))
+            )
+            cinsiyet_secenek.click()
+
+            kap_element = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH, '//*[@data-vv-as="Kap"]'))
+            )
+            kap_element.click()
+
+            kap_secenek = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH, '//span[normalize-space(text())="Kapsız"]'))
+            )
+            kap_secenek.click()
+
+            sezon_element = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH, '//*[@data-vv-as="Sezon"]'))
+            )
+            sezon_element.click()
+
+            sezon_secenek = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH, '//span[normalize-space(text())="Tüm Sezonlar"]'))
+            )
+            sezon_secenek.click()
+
+            menşei_element = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH, '//*[@data-vv-as="Menşei"]'))
+            )
+            menşei_element.click()
+
+            menşei_search = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, '/html/body/div[1]/div[2]/div/div[1]/div[2]/div[4]/div/div[2]/div[1]/div[26]/div/div/div/div/div/div/div[2]/div[1]/div/div/div/div/input')) #Sends brand keys to box
+            )
+            time.sleep(2)
+            menşei_search.send_keys("TR")
+            time.sleep(2)
+            # Try locating the "Belirtilmemiş" option
+            menşei_seçenek = WebDriverWait(driver, 5).until(
+                EC.presence_of_element_located((By.XPATH, '/html/body/div[1]/div[2]/div/div[1]/div[2]/div[4]/div/div[2]/div[1]/div[26]/div/div/div/div/div/div/div[2]/div[2]/span'))
+            )
+            menşei_seçenek.click()
+
 
         urun_acıklaması = WebDriverWait(driver, 10).until(
             EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div[2]/div/div[1]/div[1]/div/div[4]/div/span')) #Soldaki ürün açıklaması kısmına tıklıyor
@@ -358,16 +613,26 @@ for i in merchant_sku:
         Beden_Skalası.click()
 
         for i in size_list:
-            beden_input = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.XPATH, '/html/body/div[1]/div[2]/div/div[1]/div[2]/div[8]/div/div[2]/div[2]/div/div[1]/div/div/div/div[2]/div[1]/div/div/div/div/input')) #Sends size keys to box
-            )
-            beden_input.send_keys(i)
-            size_checkbox = WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((By.XPATH, f"//span[contains(@class, 'text') and text()='{i}']"))
-            )
-            size_checkbox.click()
-            beden_input.clear()
-        
+            try:
+                beden_input = WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located((By.XPATH, '/html/body/div[1]/div[2]/div/div[1]/div[2]/div[8]/div/div[2]/div[2]/div/div[1]/div/div/div/div[2]/div[1]/div/div/div/div/input')) #Sends size keys to box
+                )
+                beden_input.send_keys(i)
+                size_checkbox = WebDriverWait(driver, 5).until(
+                EC.element_to_be_clickable((By.XPATH, f"//span[contains(@class, 'text') and text()='{i}']"))
+                )
+                size_checkbox.click()
+                beden_input.clear()
+            except:
+                beden_input.clear()
+                i = i.replace("-","/")
+                beden_input.send_keys(i)
+                size_checkbox = WebDriverWait(driver, 5).until(
+                EC.element_to_be_clickable((By.XPATH, f"//span[contains(@class, 'text') and text()='{i}']"))
+                )
+                size_checkbox.click()
+                beden_input.clear()
+                continue
         satış_bilgileri = WebDriverWait(driver, 10).until(
         EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div[2]/div/div[1]/div[1]/div/div[5]/div/span')) #clicks size input box
         )
@@ -379,7 +644,7 @@ for i in merchant_sku:
         EC.presence_of_element_located((By.XPATH, '/html/body/div[1]/div[2]/div/div[1]/div[2]/div[8]/div/div[3]/div/div/div[1]/div/div/div/div/div/div/input')) #Sends size keys to box
         )
         satis_fiyati_input.send_keys(Keys.HOME)
-        satis_fiyati_input.send_keys(formatted_price) # BURAYLA UĞRAŞ
+        satis_fiyati_input.send_keys(formatted_price)
 
         kdv_rate = WebDriverWait(driver, 10).until(
             EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div[2]/div/div[1]/div[2]/div[8]/div/div[3]/div/div/div[2]/div/div/div/div/div')) #clicks size input box
@@ -490,26 +755,10 @@ for i in merchant_sku:
 
 # Optional: Verify and print cookies
 
-
 # Close the browser
 time.sleep(60)
 driver.quit()
 
-#Ürün bazında özellikleri seçmek istersen böyle yap, normalde kategori bazında yapıyorum, Urun_ozellikleri_baslik variable ından sonra yapıştır
-"""if i == "15003": #
-    kumas_tipi_element = WebDriverWait(driver, 10).until(
-    EC.element_to_be_clickable((By.XPATH, '//*[@data-vv-as="Kumaş Tipi"]'))
-    )
-    kumas_tipi_element.click()
-    dantel_secenek = WebDriverWait(driver, 10).until(
-    EC.element_to_be_clickable((By.XPATH, '//span[normalize-space(text())="Dantel"]'))
-    )
-    dantel_secenek.click()"""
 
-#Ürün özelliklerine gelmek için alternatif, direkt soldan tıklıyor
-"""        alternative_urun_ozellikleri = WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div[2]/div/div[1]/div[1]/div/div[3]/div/span')) #Chooses the outcome in the dropdown
-        )
-        alternative_urun_ozellikleri.click()"""
 
 
